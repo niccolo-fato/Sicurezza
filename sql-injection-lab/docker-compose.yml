@@ -1,0 +1,27 @@
+version: '3.1'
+services:
+  php:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    ports:
+      - 8080:80
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    platform: linux/amd64
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: testdb
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./src/db-init.sql:/docker-entrypoint-initdb.d/db-init.sql
+
+
+
