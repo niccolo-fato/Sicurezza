@@ -246,7 +246,6 @@ $password = $_GET['password'] ?? ''; // Nota: in produzione usa POST per le pass
                                 echo '<div class="error" class="result-item">';
                                 echo "<strong>ID:</strong> " . htmlspecialchars($row['id']) . "<br>";
                                 echo "<strong>Utente:</strong> " . htmlspecialchars($row['username']) . "<br>";
-                                echo "<strong>Email:</strong> " . htmlspecialchars($row['email']) . "<br>";
                                 echo '</div>';
                             }
                         } else {
