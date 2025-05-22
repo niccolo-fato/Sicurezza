@@ -5,7 +5,7 @@ if ($conn->connect_error) {
 }
 
 $username = $_GET['username'] ?? '';
-$password = $_GET['password'] ?? ''; // Nota: in produzione usa POST per le password
+$password = $_GET['password'] ?? ''; // In produzione si usa POST
 ?>
 
 <!DOCTYPE html>
