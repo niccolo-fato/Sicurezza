@@ -22,27 +22,26 @@ $password = $_GET['password'] ?? ''; // In produzione si usa POST
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #4f46e5;
-            --primary-color-light: #818cf8;
-            --primary-color-dark: #3730a3;
+            
+            --primary-color: #8b5cf6;  
+            --primary-color-light: #c4b5fd;  
+            --primary-color-dark: #5b21b6;  
+
             --white-color: #ffffff;
             --black-color: #1f2937;
             --gray-color: #6b7280;
             --gray-color-light: #f3f4f6;
             --error-color: #ef4444;
             --success-color: #22c55e;
-            
+
             --body-font: "Inter", sans-serif;
             --h1-font-size: 1.75rem;
             --normal-font-size: 1rem;
             --small-font-size: .875rem;
-            
             --font-medium: 500;
             --font-semi-bold: 600;
-            
             --border-radius: 0.75rem;
             --border-radius-sm: 0.5rem;
-            
             --transition: all 0.3s ease;
         }
 
@@ -53,10 +52,11 @@ $password = $_GET['password'] ?? ''; // In produzione si usa POST
         }
 
         body {
+            background: url('foto1.jpg') no-repeat center center fixed;
+            background-size: cover;
             font-family: var(--body-font);
             font-size: var(--normal-font-size);
             color: var(--black-color);
-            background: linear-gradient(135deg, var(--primary-color-light), var(--primary-color));
             min-height: 100vh;
             display: grid;
             place-items: center;
@@ -194,6 +194,10 @@ $password = $_GET['password'] ?? ''; // In produzione si usa POST
             border-radius: var(--border-radius-sm);
             margin-bottom: 1rem;
             font-size: var(--small-font-size);
+        }
+
+        .results {
+            margin-top: 1.5rem;
         }
 
         @media screen and (min-width: 576px) {

