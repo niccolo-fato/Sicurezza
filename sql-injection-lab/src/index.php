@@ -1,3 +1,6 @@
+
+
+
 <?php
 $conn = new mysqli("db", "root", "root", "testdb");
 if ($conn->connect_error) {
@@ -5,180 +8,228 @@ if ($conn->connect_error) {
 }
 
 $username = $_GET['username'] ?? '';
-$password = $_GET['password'] ?? ''; // In produzione si usa POST
+$password = $_GET['password'] ?? '';
 ?>
 
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Login Utenti</title>
-    <title>Login Utenti</title>
-    <!-- Google Fonts -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <!-- Remix Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <style>
-        :root {
-            
-            --primary-color: #8b5cf6;  
-            --primary-color-light: #c4b5fd;  
-            --primary-color-dark: #5b21b6;  
-
-            --white-color: #ffffff;
-            --black-color: #1f2937;
-            --gray-color: #6b7280;
-            --gray-color-light: #f3f4f6;
-            --error-color: #ef4444;
-            --success-color: #22c55e;
-
-            --body-font: "Inter", sans-serif;
-            --h1-font-size: 1.75rem;
-            --normal-font-size: 1rem;
-            --small-font-size: .875rem;
-            --font-medium: 500;
-            --font-semi-bold: 600;
-            --border-radius: 0.75rem;
-            --border-radius-sm: 0.5rem;
-            --transition: all 0.3s ease;
-        }
-
-        * {
-            box-sizing: border-box;
-            padding: 0;
-            margin: 0;
-        }
-
-        body {
-            background: url('foto1.jpg') no-repeat center center fixed;
-            background-size: cover;
-            font-family: var(--body-font);
-            font-size: var(--normal-font-size);
-            color: var(--black-color);
-            min-height: 100vh;
-            display: grid;
-            place-items: center;
-            padding: 1rem;
-        }
-
-        .login {
-            width: 100%;
-            max-width: 420px;
-        }
-
-        .login__form {
-            background-color: var(--white-color);
-            padding: 2.5rem;
-            border-radius: var(--border-radius);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .login__title {
-            color: var(--black-color);
-            text-align: center;
-            font-size: var(--h1-font-size);
-            font-weight: var(--font-semi-bold);
-            margin-bottom: 2rem;
-        }
-
-        .login__content {
-            display: grid;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .login__box {
-            position: relative;
-        }
-
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet"><s></s>
+  <title>Login</title>
+  <style>
+    :root {
+  --gray-color-light: #d1d5db;
+  --gray-color: #6b7280;
+  --black-color: #111827;
+  --white-color: #ffffff;
+  --primary-color: #4f46e5;
+  --normal-font-size: 1rem;
+  --small-font-size: 0.75rem;
+  --border-radius-sm: 0.5rem;
+  --transition: 0.3s ease;
+}
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      margin: 0;
+      background-color: #f3f1e8;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .login-box {
+      display: flex;
+      max-width: 900px;
+      width: 100%;
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      
+    }
+    .form-side {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .form-side h2 {
+      margin-bottom: 20px;
+      font-size: 2.5rem;
+      text-align: center;
+    }
+    .form-side input {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      width: 100%;
+    }
+    .form-side button {
+      padding: 12px;
+      background-color: #2d3e32;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      max-width: 460px;
+      margin: 2rem auto;
+      display: grid;
+      gap: 1.5rem;
+      width: 90%;
+      padding: 1rem;
+      
+    }
+    a {
+  color: inherit;           /* usa il colore del genitore */
+  text-decoration: none;    /* rimuove la sottolineatura */
+}
+    .form-side .links {
+      font-size: 14px;
+      color: #555;
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+      margin-top: -1.7rem;
+    }
+    .form-side .socials {
+      margin-top: 10px;
+    }
+    .form-side .socials img {
+      width: 24px;
+      cursor: pointer;
+    }
+    .image-side {
+      flex-basis: 50%;
+       background-color: #f3f1e8;
+    display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 50px;
+    }
+    .image-side svg {
+      max-width: 100%;
+      height: auto;
+    }
+    .login__content {
+    max-width: 480px;
+    margin: 2rem auto;
+    display: grid;
+    gap: 1.5rem;
+    width: 90%;
+    padding: 1rem;
+        margin-bottom: 0;
+    }
+    .login__box {
+        position: relative;
+    }
         .login__input {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid var(--gray-color-light);
-            border-radius: var(--border-radius-sm);
-            font-size: var(--normal-font-size);
-            color: var(--black-color);
-            transition: var(--transition);
-        }
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid var(--gray-color-light);
+        border-radius: var(--border-radius-sm);
+        font-size: var(--normal-font-size);
+        color: var(--black-color);
+        transition: var(--transition);
+    }
 
-        .login__input:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-        }
+    .login__input:focus {
+        border-color: rgb(255 199 40);
+        box-shadow: 0 0 0 4px rgba(229, 165, 70, 0.1);
+        outline: none;
+    }
 
-        .login__label {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray-color);
-            pointer-events: none;
-            transition: var(--transition);
-        }
+    .login__label {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray-color);
+        pointer-events: none;
+        transition: var(--transition);
+    }
 
-        .login__input:focus + .login__label,
-        .login__input:not(:placeholder-shown) + .login__label {
-            top: 0;
-            left: 0.75rem;
-            font-size: var(--small-font-size);
-            background-color: var(--white-color);
-            padding: 0 0.25rem;
+    .login__input:focus + .login__label,
+    .login__input:not(:placeholder-shown) + .login__label {
+        top: 0;
+        left: 0.75rem;
+        font-size: var(--small-font-size);
+        background-color: var(--white-color);
+        padding: 0 0.25rem;
+        color: rgb(253, 162, 25);
+    }
+
+    .login__eye {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: var(--gray-color);
+        transition: var(--transition);
+    }
+
+    .login__eye:hover {
             color: var(--primary-color);
         }
+    .image-side svg, 
+    .image-side embed {
+    width: 100%;
+    max-width: 1000px;
+    height: auto;
+    margin-left: -150px;
+    }
+    .form-side .socials {
+  margin-top: 2rem;
+  text-align: center;
+}
 
-        .login__eye {
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: var(--gray-color);
-            transition: var(--transition);
-        }
+.social-title {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  color: #444;
+  
+}
 
-        .login__eye:hover {
-            color: var(--primary-color);
-        }
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  
+}
 
-        .login__button {
-            width: 100%;
-            padding: 1rem;
-            background-color: var(--primary-color);
-            color: var(--white-color);
-            font-weight: var(--font-semi-bold);
-            border-radius: var(--border-radius-sm);
-            cursor: pointer;
-            transition: var(--transition);
-            border: none;
-            font-size: var(--normal-font-size);
-        }
+.social-icons img {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  width: 30px;
+  height: 30px;
+  margin: 0 8px;
+  object-fit: contain;
+  filter: brightness(0); 
+}
 
-        .login__button:hover {
-            background-color: var(--primary-color-dark);
+.social-icons img:hover {
+  transform: scale(1.1);
+}
+.login__button:hover {
+            background-color: rgb(255 199 40);
             transform: translateY(-2px);
-        }
-
-        .login__register {
-            text-align: center;
-            margin-top: 1.5rem;
-            color: var(--gray-color);
-        }
-
-        .login__register a {
-            color: var(--primary-color);
-            font-weight: var(--font-medium);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .login__register a:hover {
-            color: var(--primary-color-dark);
-            text-decoration: underline;
-        }
-
-        .error {
+ }
+.error {
             color: var(--error-color);
             background-color: #fef2f2;
             padding: 1rem;
@@ -187,34 +238,17 @@ $password = $_GET['password'] ?? ''; // In produzione si usa POST
             font-size: var(--small-font-size);
         }
 
-        .success {
-            color: var(--success-color);
-            background-color: #f0fdf4;
-            padding: 1rem;
-            border-radius: var(--border-radius-sm);
-            margin-bottom: 1rem;
-            font-size: var(--small-font-size);
-        }
 
-        .results {
-            margin-top: 1.5rem;
-        }
 
-        @media screen and (min-width: 576px) {
-            .login__form {
-                padding: 3rem;
-            }
-            
-            .login__title {
-                font-size: 2rem;
-            }
-        }
-    </style>
+  </style>
 </head>
 <body>
-    <div class="login">
+  <div class="container">
+    
+      <div class="form-side">
+        <h2>Log in</h2>
         <form class="login__form" method="get" action="">
-            <h1 class="login__title">Accesso Utente</h1>
+            
             
             <div class="login__content">
                 <div class="login__box">
@@ -228,15 +262,29 @@ $password = $_GET['password'] ?? ''; // In produzione si usa POST
                     <i class="ri-eye-off-line login__eye" id="login-eye"></i>
                 </div>
             </div>
-
-            <button type="submit" class="login__button">Accedi</button>
-
-            <div class="login__register">
-                Non hai un account? <a href="#">Registrati</a>
-            </div>
+            <button type="submit" class="login__button">Log In</button>
         </form>
 
-        <?php
+        <div class="links">
+          <a href="#">Forgot Password?</a>
+        </div>
+        <div class="socials">
+<span class="social-title">Log In with</span>
+  <div class="social-icons">
+    <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/google-logo--v1.png" alt="google-logo--v1"/>
+    <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/facebook-new.png" alt="facebook-new"/>
+    <img width="50" height="50" src="https://img.icons8.com/ios/50/instagram-new--v1.png" alt="instagram-new--v1"/>
+    <img src="https://img.icons8.com/ios-glyphs/30/linkedin.png" alt="LinkedIn" />
+  </div>
+</div>
+      </div>
+      <div class="image-side">
+        <!-- Inserisci direttamente il contenuto SVG oppure usa l'embed -->
+        <embed src="college-project-animate.svg" type="image/svg+xml" />
+      </div>
+    
+  </div>
+  <?php
         if (!empty($username) || !empty($password)) {
             $query = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
             
@@ -271,9 +319,7 @@ $password = $_GET['password'] ?? ''; // In produzione si usa POST
             }
         }
         ?>
-    </div>
-
-    <script>
+  <script>
          const showHiddenPass = (loginPass, loginEye) => {
             const input = document.getElementById(loginPass),
                   iconEye = document.getElementById(loginEye)
@@ -299,6 +345,7 @@ $password = $_GET['password'] ?? ''; // In produzione si usa POST
         }
     </script>
 </body>
+
 </html>
 
 <?php

