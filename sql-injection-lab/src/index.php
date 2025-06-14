@@ -1,4 +1,3 @@
-
 <?php
 $conn = new mysqli("db", "root", "root", "testdb");
 if ($conn->connect_error) {
@@ -196,7 +195,9 @@ $password = $_GET['password'] ?? '';
               pointer-events: none;
               transition: var(--transition);
             }
-        
+            .error-input {
+              border-color: red !important;
+            }
             .login__input:focus + .login__label,
             .login__input:not(:placeholder-shown) + .login__label {
               top: 0;
@@ -211,7 +212,6 @@ $password = $_GET['password'] ?? '';
               border-color: red !important;
               box-shadow: 0 0 0 4px rgba(229, 70, 70, 0.1) !important;
             }
-        
             .error-input:focus + .login__label,
             .error-input:not(:placeholder-shown) + .login__label {
               color: red !important;
@@ -256,18 +256,21 @@ $password = $_GET['password'] ?? '';
             }
         
             .error {
-              color: var(--error-color);
-              background-color: #fef2f2;
-              padding: 1rem;
-              border-radius: var(--border-radius-sm);
-              margin-bottom: 1rem;
-              font-size: var(--small-font-size);
+              display: none;
             }
-        
             .login_box.sideImage {
               background-color: #ffe5e5;
               border-left: 4px solid red;
               transition: background-color 0.3s ease;
+            }
+            .login__testo{
+              display: none ;
+            }
+            .error-testo{
+              display: inline;
+              padding-left: 10px;
+              color: red;
+              margin-top: -23px;
             }
         </style>
     </head>
@@ -281,8 +284,9 @@ $password = $_GET['password'] ?? '';
                         <div class="login__box">
                             <input type="text" id="login-username" class="login__input" name="username" autocomplete="off" value="<?php echo htmlspecialchars($username); ?>" placeholder=" " required>
                             <label for="login-username" class="login__label">Nome Utente</label>
-                        </div>
 
+                        </div>
+                        <span id="testo" class="login__testo">No account found with this username or password. Please retry.</span>
                         <div class="login__box">
                             <input type="password" id="login-pass" class="login__input" name="password" autocomplete="off" placeholder=" " required>
                             <label for="login-pass" class="login__label">Password</label>
@@ -324,13 +328,13 @@ if (!empty($username) || !empty($password)) {
                 if ($result->num_rows > 0) {
     echo '<div id="loginSuccess" style="display:none;"></div>'; 
     while ($row = $result->fetch_assoc()) {
-        echo '<div class="error" class="result-item">';
+        echo '<div class="success" class="result-item">';
         echo "<strong>ID:</strong> " . htmlspecialchars($row['id']) . "<br>";
         echo "<strong>Utente:</strong> " . htmlspecialchars($row['username']) . "<br>";
         echo '</div>';
     }
 } else {
-                    echo '<div class="error">Credenziali non valide</div>';
+                    echo '<div class="error"></div>';
                     echo '<div id="loginError" style="display:none;"></div>';
                 }
                 $result->free();
@@ -383,6 +387,8 @@ if (!empty($username) || !empty($password)) {
                       if (usernameInput) usernameInput.classList.remove('error-input');
                       const passwordInput = document.getElementById('login-pass');
                       if (passwordInput) passwordInput.classList.remove('error-pass');
+                      const testo = document.getElementById('testo');
+                      if (testo) testo.classList.remove('error-testo');
                       document.querySelectorAll('.error, .success').forEach(el => el.remove());
                       const embed = document.getElementById('sideImage');
                       if (embed) embed.src = 'college-project-animate.svg';
@@ -401,6 +407,8 @@ if (!empty($username) || !empty($password)) {
                     if (usernameInput) usernameInput.classList.add('error-input');
                     const passwordInput = document.getElementById('login-pass');
                     if (passwordInput) passwordInput.classList.add('error-pass');
+                    const testo = document.getElementById('testo');
+                    if (testo) testo.classList.add('error-testo');
                   }
                   if (document.getElementById('loginSuccess')) {
                     document.getElementById('login-username').value = '';
@@ -408,11 +416,13 @@ if (!empty($username) || !empty($password)) {
                   const passwordInput = document.getElementById('login-pass');
                   const buttonError = document.getElementById('buttonError');
                   const loginEye = document.getElementById('login-eye');
+                  const testo = document.getElementById('testo');
                 
                   usernameInput?.classList.remove('error-input');
                   passwordInput?.classList.remove('error-pass');
                   buttonError?.classList.remove('error');
                   loginEye?.classList.remove('error-icon');
+                  testo?.classList.remove('error-testo')
                 }
             </script>
     </body>
