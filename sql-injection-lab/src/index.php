@@ -148,7 +148,7 @@ $password = $_GET['password'] ?? '';
               width: 100%;
               max-width: 1000px;
               height: auto;
-              margin-left: -150px;
+              margin-left: -200px;
             }
         
             a {
@@ -272,10 +272,65 @@ $password = $_GET['password'] ?? '';
               color: red;
               margin-top: -23px;
             }
+            .success {
+              top: 20px;
+              right: 20px;
+              z-index: 9999;
+              background-color: #e6ffed;
+              color: #2d6a4f;
+              border: 1px solid #95d5b2;
+              padding: 12px 20px;
+              border-radius: 8px;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+              font-weight: 500;
+              min-width: 220px;
+              animation: slideIn 0.4s ease;
+              margin-top: 10px;
+              opacity: 0;
+              transform: translateX(100%);
+              animation: slideIn 0.4s ease forwards;
+            }
+
+            @keyframes slideIn {
+              from {
+                opacity: 0;
+                transform: translateX(100%);
+              }
+              to {
+                opacity: 1;
+                transform: translateX(0);
+              }
+            }
+
+            .success-toast-wrapper {
+              position: fixed;
+              top: 20px;
+              right: 0px;
+              width: auto;
+              max-height: 97%;
+              overflow-y: scroll;
+              overflow-x: hidden;
+              z-index: 9999;
+              display: flex;
+              flex-direction: column;
+              align-items: flex-end;
+              gap: 10px;
+              padding-right: 8px;
+            }
+
+            .success-toast-wrapper::-webkit-scrollbar {
+              width: 6px;
+            }
+
+            .success-toast-wrapper::-webkit-scrollbar-thumb {
+              background-color: rgba(0, 0, 0, 0.2);
+              border-radius: 3px;
+            }
         </style>
     </head>
 
     <body>
+
         <div class="container">
             <div class="form-side">
                 <h2>Log in</h2>
@@ -326,33 +381,34 @@ if (!empty($username) || !empty($password)) {
             if ($result = $conn->store_result()) {
                 echo '<div class="results">';
                 if ($result->num_rows > 0) {
-    echo '<div id="loginSuccess" style="display:none;"></div>'; 
-    while ($row = $result->fetch_assoc()) {
-        echo '<div class="success" class="result-item">';
-        echo "<strong>ID:</strong> " . htmlspecialchars($row['id']) . "<br>";
-        echo "<strong>Utente:</strong> " . htmlspecialchars($row['username']) . "<br>";
-        echo '</div>';
-    }
-} else {
+                  echo '<div id="loginSuccess" style="display:none;"></div>'; 
+                  echo '<div class="success-toast-wrapper">';
+                  while ($row = $result->fetch_assoc()) {
+                      echo '<div class="success">';
+                      echo "<strong>ID:</strong> " . htmlspecialchars($row['id']) . "<br>";
+                      echo "<strong>Utente:</strong> " . htmlspecialchars($row['username']) . "<br>";
+                      echo '</div>';
+                  }
+                  echo '</div>';
+                } else {
                     echo '<div class="error"></div>';
                     echo '<div id="loginError" style="display:none;"></div>';
                 }
                 $result->free();
                 echo '</div>';
-            } else {
-                if ($conn->errno) {
-                    echo '<div class="error">Errore: ' . $conn->error . '</div>';
-                } else {
-                    echo '<div class="success">Operazione completata</div>';
-                }
-            }
+          } else {
+              if ($conn->errno) {
+                  echo '<div class="error">Errore: ' . $conn->error . '</div>';
+              } else {
+                  echo '<div class="success">Operazione completata</div>';
+              }
+          }
         } while ($conn->more_results() && $conn->next_result());
     } else {
         echo '<div class="error">Errore nella query: ' . $conn->error . '</div>';
     }
 }
 ?>
-
             <script>
                 const showHiddenPass = (loginPass, loginEye) => {
                     const input = document.getElementById(loginPass),
@@ -424,11 +480,19 @@ if (!empty($username) || !empty($password)) {
                   loginEye?.classList.remove('error-icon');
                   testo?.classList.remove('error-testo')
                 }
+                const wrapper = document.querySelector('.success-toast-wrapper');
+                if (wrapper && wrapper.children.length <= 1) {
+                  wrapper.style.overflowY = 'hidden';
+                } 
+                window.addEventListener("DOMContentLoaded", () => {
+                  const toasts = document.querySelectorAll('.success');
+                  toasts.forEach((toast, index) => {
+                    toast.style.animationDelay = `${index * 0.1}s`;
+                  });
+                });
             </script>
     </body>
-
     </html>
-
     <?php
 $conn->close();
 ?>
