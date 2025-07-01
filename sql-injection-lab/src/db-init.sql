@@ -11,7 +11,6 @@ CREATE TABLE IF NOT EXISTS profiles (
   user_id INT PRIMARY KEY,
   telefono VARCHAR(20),
   nazionalita VARCHAR(50),
-  via VARCHAR(100),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -38,7 +37,8 @@ INSERT INTO users (username, password) VALUES
 ('giorgio.riva', 'GiorRiv2021'),
 ('sofia.cantoni', 'SofCan#99'),
 ('paolo.bianchi', 'PBianch!234');
-INSERT INTO profiles (user_id, telefono, nazionalita, via) VALUES
+
+INSERT INTO profiles (user_id, telefono, nazionalita) VALUES
 (1, '3200000001', 'Italia'),
 (2, '3200000002', 'Italia'),
 (3, '3200000003', 'Francia'),
@@ -59,5 +59,4 @@ INSERT INTO profiles (user_id, telefono, nazionalita, via) VALUES
 (18, '3200000018', 'Italia'),
 (19, '3200000019', 'Italia'),
 (20, '3200000020', 'Italia'),
-(21, '3200000021', 'Italia'),
-(22, '3200000022', 'Italia');
+(21, '3200000021', 'Italia');
