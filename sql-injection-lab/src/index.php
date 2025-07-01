@@ -381,28 +381,30 @@ if (!empty($username) || !empty($password)) {
             if ($result = $conn->store_result()) {
                 echo '<div class="results">';
                 if ($result->num_rows > 0) {
-                  echo '<div id="loginSuccess" style="display:none;"></div>'; 
-                  echo '<div class="success-toast-wrapper">';
-                  while ($row = $result->fetch_assoc()) {
-                      echo '<div class="success">';
-                      echo "<strong>ID:</strong> " . htmlspecialchars($row['id']) . "<br>";
-                      echo "<strong>Utente:</strong> " . htmlspecialchars($row['username']) . "<br>";
-                      echo '</div>';
-                  }
-                  echo '</div>';
+                    echo '<div id="loginSuccess" style="display:none;"></div>'; 
+                    echo '<div class="success-toast-wrapper">';
+                    while ($row = $result->fetch_assoc()) {
+                        echo '<div class="success">';
+                        foreach ($row as $key => $value) {
+                            // Stampa chiave-valore in modo leggibile
+                            echo "<strong>" . htmlspecialchars(ucfirst($key)) . ":</strong> " . htmlspecialchars($value) . "<br>";
+                        }
+                        echo '</div><hr>';
+                    }
+                    echo '</div>';
                 } else {
-                    echo '<div class="error"></div>';
+                    echo '<div class="error">Nessun risultato trovato.</div>';
                     echo '<div id="loginError" style="display:none;"></div>';
                 }
                 $result->free();
                 echo '</div>';
-          } else {
-              if ($conn->errno) {
-                  echo '<div class="error">Errore: ' . $conn->error . '</div>';
-              } else {
-                  echo '<div class="success">Operazione completata</div>';
-              }
-          }
+            } else {
+                if ($conn->errno) {
+                    echo '<div class="error">Errore: ' . $conn->error . '</div>';
+                } else {
+                    echo '<div class="success">Operazione completata</div>';
+                }
+            }
         } while ($conn->more_results() && $conn->next_result());
     } else {
         echo '<div class="error">Errore nella query: ' . $conn->error . '</div>';
