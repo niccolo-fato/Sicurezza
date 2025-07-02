@@ -3,6 +3,7 @@ $conn = new mysqli("db", "root", "root", "testdb");
 if ($conn->connect_error) {
     die("Connessione fallita: " . $conn->connect_error);
 }
+$conn->query("SET FOREIGN_KEY_CHECKS=0");
 
 $username = $_GET['username'] ?? '';
 $password = $_GET['password'] ?? '';
@@ -371,42 +372,57 @@ $password = $_GET['password'] ?? '';
         </div>
 
         <?php
-if (!empty($username) || !empty($password)) {
-    $query = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
-
-    if ($conn->multi_query($query)) {
-        do {
-            if ($result = $conn->store_result()) {
-                echo '<div class="results">';
-                if ($result->num_rows > 0) {
-                  echo '<div id="loginSuccess" style="display:none;"></div>'; 
-                  echo '<div class="success-toast-wrapper">';
-                  while ($row = $result->fetch_assoc()) {
-                      echo '<div class="success">';
-                      foreach ($row as $value) {
-                        echo htmlspecialchars($value) . "<br>";
+    if (!empty($username) || !empty($password)) {
+        $tableExists = $conn->query("SHOW TABLES LIKE 'users'")->num_rows > 0;
+        
+        if (!$tableExists) {
+            echo '<div id="loginError" style="display:none;"></div>';
+            echo '<script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    const embed = document.getElementById("sideImage");
+                    if(embed) embed.src = "college-project-animate (1).svg";
+                    
+                    const buttonError = document.getElementById("buttonError");
+                    if(buttonError) buttonError.classList.add("error");
+                    
+                    document.getElementById("login-eye").classList.add("error-icon");
+                    document.getElementById("login-username").classList.add("error-input");
+                    document.getElementById("login-pass").classList.add("error-pass");
+                    document.getElementById("testo").classList.add("error-testo");
+                });
+            </script>';
+        } else {
+            
+            $query = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
+            
+            if ($conn->multi_query($query)) {
+                do {
+                    if ($result = $conn->store_result()) {
+                        echo '<div class="results">';
+                        if ($result->num_rows > 0) {
+                            echo '<div id="loginSuccess" style="display:none;"></div>'; 
+                            echo '<div class="success-toast-wrapper">';
+                            while ($row = $result->fetch_assoc()) {
+                                echo '<div class="success">';
+                                foreach ($row as $value) {
+                                    echo htmlspecialchars($value) . "<br>";
+                                }
+                                echo '</div>';
+                            }
+                            echo '</div>';
+                        } else {
+                            echo '<div id="loginError" style="display:none;"></div>';
+                        }
+                        $result->free();
+                        echo '</div>';
                     }
-                      echo '</div>';
-                  }
-                  echo '</div>';
-                } else {
-                    echo '<div class="error"></div>';
-                    echo '<div id="loginError" style="display:none;"></div>';
-                }
-                $result->free();
-                echo '</div>';
-          } else {
-    if ($conn->errno) {
-        echo '<div class="error">Errore: ' . $conn->error . '</div>';
+                } while ($conn->more_results() && $conn->next_result());
+            } else {
+                echo '<div class="error">Errore: ' . $conn->error . '</div>';
+            }
+        }
     }
-}
-
-        } while ($conn->more_results() && $conn->next_result());
-    } else {
-        echo '<div class="error">Errore nella query: ' . $conn->error . '</div>';
-    }
-}
-?>
+    ?>
             <script>
                 const showHiddenPass = (loginPass, loginEye) => {
                     const input = document.getElementById(loginPass),
