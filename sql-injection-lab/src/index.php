@@ -398,12 +398,11 @@ if (!empty($username) || !empty($password)) {
                 $result->free();
                 echo '</div>';
           } else {
-              if ($conn->errno) {
-                  echo '<div class="error">Errore: ' . $conn->error . '</div>';
-              } else {
-                  echo '<div class="success">Operazione completata</div>';
-              }
-          }
+    if ($conn->errno) {
+        echo '<div class="error">Errore: ' . $conn->error . '</div>';
+    }
+}
+
         } while ($conn->more_results() && $conn->next_result());
     } else {
         echo '<div class="error">Errore nella query: ' . $conn->error . '</div>';
