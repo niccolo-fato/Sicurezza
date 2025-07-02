@@ -1,5 +1,4 @@
 <?php
-// sqli_test.php
 
 $target = "http://localhost:8080";
 
@@ -30,7 +29,6 @@ foreach ($payloads as $payload) {
         continue;
     }
 
-    // Se contiene DELETE, verifica se l'admin è stato eliminato
     $is_modifica = str_contains($payload, 'DELETE') || str_contains($payload, 'UPDATE') || str_contains($payload, 'DROP');
 if ($is_modifica) {
     $cleaned = strip_tags($response);
@@ -48,13 +46,11 @@ if ($is_modifica) {
             $decoded = html_entity_decode(strip_tags($clean));
             $lines = array_values(array_filter(array_map('trim', explode("\n", $decoded))));
 
-            // Filtra eventuali righe strane tipo "Operazione completata"
             $lines = array_filter($lines, function ($line) {
                 return stripos($line, 'operazione completata') === false &&
                        stripos($line, 'operazione non completata') === false;
             });
 
-            // Etichette dinamiche
             if (
                 str_contains($payload, "GROUP_CONCAT(column_name)") &&
                 str_contains($payload, "information_schema.columns")
