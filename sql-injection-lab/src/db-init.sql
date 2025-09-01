@@ -5,15 +5,14 @@ CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(50) NOT NULL,
   password VARCHAR(50) NOT NULL
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS profiles (
   user_id INT PRIMARY KEY,
   telefono VARCHAR(20),
   nazionalita VARCHAR(50),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
+) ENGINE=InnoDB;
 INSERT INTO users (username, password) VALUES
 ('admin', 'admin123'),
 ('alessio.rossi', 'AleRo2023!'),

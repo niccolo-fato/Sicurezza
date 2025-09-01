@@ -3,7 +3,7 @@ $conn = new mysqli("db", "root", "root", "testdb");
 if ($conn->connect_error) {
     die("Connessione fallita: " . $conn->connect_error);
 }
-$conn->query("SET FOREIGN_KEY_CHECKS=0");
+$conn->query("SET FOREIGN_KEY_CHECKS==1");
 
 $username = $_GET['username'] ?? '';
 $password = $_GET['password'] ?? '';
